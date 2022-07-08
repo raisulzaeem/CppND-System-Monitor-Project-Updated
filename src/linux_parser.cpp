@@ -100,7 +100,7 @@ long LinuxParser::UpTime() {
     std::istringstream linestream(line);
     linestream>>upTimeSeconds;
   }
-  return std::stol(upTimeSeconds);
+  return stringToLong(upTimeSeconds);
 }
 
 // TODO: Read and return the number of jiffies for the system
@@ -130,8 +130,8 @@ long LinuxParser::ActiveJiffies(int pid) {
 // TODO: Read and return the number of active jiffies for the system
 long LinuxParser::ActiveJiffies() {
   vector<string> jiffies = CpuUtilization();
-  return stol(jiffies[CPUStates::kUser_]) + stol(jiffies[CPUStates::kNice_]) + stol(jiffies[CPUStates::kSystem_]) + 
-         stol(jiffies[CPUStates::kIRQ_]) + stol(jiffies[CPUStates::kSoftIRQ_]) + stol(jiffies[CPUStates::kSteal_]);
+  return stringToLong(jiffies[CPUStates::kUser_]) + stringToLong(jiffies[CPUStates::kNice_]) + stringToLong(jiffies[CPUStates::kSystem_]) + 
+         stringToLong(jiffies[CPUStates::kIRQ_]) + stringToLong(jiffies[CPUStates::kSoftIRQ_]) + stringToLong(jiffies[CPUStates::kSteal_]);
 }
 
 // TODO: Read and return the number of idle jiffies for the system
@@ -224,7 +224,7 @@ string LinuxParser::Ram(int pid) {
       }
     }
   }
-  return std::to_string(std::stol(ram)/1000);
+  return std::to_string(stringToLong(ram)/1000);
 }
 
 // TODO: Read and return the user ID associated with a process
@@ -280,7 +280,7 @@ long LinuxParser::UpTime(int pid) {
       values.push_back(value);
     };
   }
-  return LinuxParser::UpTime() - (stol(values[21]) / sysconf(_SC_CLK_TCK)); // seconds
+  return LinuxParser::UpTime() - (stringToLong(values[21]) / sysconf(_SC_CLK_TCK)); // seconds
 }
 
 long LinuxParser::stringToLong(std::string str)
