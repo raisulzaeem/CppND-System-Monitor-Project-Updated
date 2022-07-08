@@ -285,10 +285,12 @@ long LinuxParser::UpTime(int pid) {
 
 long LinuxParser::stringToLong(std::string str)
 {
-  long value;
+  long value{0};
   try
   {
-    value = std::stol(str);
+    if(string_val != ""){
+      value = std::stol(string_val);
+}
   }
   catch(...)
   {
