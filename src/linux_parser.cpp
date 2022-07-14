@@ -288,7 +288,7 @@ long LinuxParser::stringToLong(std::string str)
   try
   {
     if(str != ""){
-      value = std::stol(string_val);
+      value = std::stol(str);
 }
   }
   catch(...)
