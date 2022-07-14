@@ -60,7 +60,7 @@ vector<int> LinuxParser::Pids() {
       string filename(file->d_name);
       if (std::all_of(filename.begin(), filename.end(), isdigit)) {
         int pid = stoi(filename);
-        pids.push_back(pid);
+        pids.emplace_back(pid);
       }
     }
   }
@@ -120,7 +120,7 @@ long LinuxParser::ActiveJiffies(int pid) {
     }
     for (int i=0; i<4; i++){
       linestream>>value;
-      cpuData.push_back(value);
+      cpuData.emplace_back(value);
     }
   }
   return std::accumulate(cpuData.begin(), cpuData.end(), 0L);
@@ -144,7 +144,7 @@ long LinuxParser::IdleJiffies() {
     std::istringstream linestream(line);
     linestream >> cpu; // take "cpu" away
     while (linestream >> value) {
-      cpuData.push_back(value);
+      cpuData.emplace_back(value);
     }
   }
   return cpuData.at(CPUStates::kIdle_) + cpuData.at(CPUStates::kIOwait_);
@@ -160,7 +160,7 @@ vector<string> LinuxParser::CpuUtilization() {
     std::istringstream linestream(line);
     linestream >> cpu; // take "cpu" away
     while (linestream >> value) {
-      cpuData.push_back(value);
+      cpuData.emplace_back(value);
     }
   }
   return cpuData;
@@ -216,7 +216,8 @@ string LinuxParser::Ram(int pid) {
     while(std::getline(filestream, status)){
       std::istringstream linestream(status);
       linestream>>key;
-      if(key == "VmSize:") {
+      // "VmRSS:" is used instead of "VmSize:", because VmSize sums all of the virtual memory from /proc/
+      if(key == "VmRSS:") {
         linestream>>ram;
         break;
       }
@@ -275,7 +276,7 @@ long LinuxParser::UpTime(int pid) {
     std::getline(stream, line);
     std::istringstream linestream(line);
     while (linestream >> value) {
-      values.push_back(value);
+      values.emplace_back(value);
     };
   }
   return LinuxParser::UpTime() - (stringToLong(values[21]) / sysconf(_SC_CLK_TCK)); // seconds
